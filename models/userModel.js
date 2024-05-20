@@ -17,7 +17,6 @@ const userSchema = new mongoose.Schema({
   coin: {
     type: Number,
     required: true,
-    unique: true,
   },
   // password: {
   //   type: String,
