@@ -7,13 +7,25 @@ const getUserCoin = async (username) => {
 };
 
 const updateUserCoin = async (username, newCoinValue) => {
-  const user = await User.findOne({ username });
-  if (user) {
-    user.coin = newCoinValue;
-    await user.save();
-    return user.coin;
+  try {
+    if (typeof newCoinValue !== 'number') {
+      throw new Error('The currency value must be a number');
+    }
+    // Actualización atómica
+    const updatedUser = await User.findOneAndUpdate(
+      { username },
+      { $set: { coin: newCoinValue } },
+      { new: true, useFindAndModify: false }
+    );
+    if (updatedUser) {
+      return updatedUser.coin;
+    } else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    console.error('Error updating user currency:', error);
+    return null;
   }
-  return null;
 };
 
 module.exports = { getUserCoin, updateUserCoin };
