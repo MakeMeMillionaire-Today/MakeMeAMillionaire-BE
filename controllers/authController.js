@@ -34,16 +34,18 @@ module.exports.getUser = async (req, res, next) => {
 module.exports.updateCoin = async (req, res, next) => {
   try {
     const { username } = req.params;
-    const { amount } = req.body;
+    const { amount } = req.body;    
     if (typeof amount !== "number") {
       return res.status(400).json({ message: "Amount must be a number" });
     }
-    const user = await User.findOne({ username });
+    const user = await User.findOneAndUpdate(
+      { username },
+      { coin: amount }, // Update the value of 'coin' directly
+      { new: true } // Returns the updated document
+    );
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    user.coin += amount;
-    await user.save();
     return res.json({ status: true, coin: user.coin });
   } catch (error) {
     next(error);

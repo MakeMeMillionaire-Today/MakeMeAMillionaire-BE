@@ -10,10 +10,10 @@ const {
   getUser,
   updateCoin,
 } = require("./controllers/authController");
-const {
-  getUserCoin,
-  updateUserCoin,
-} = require("./controllers/moneyController");
+// const {
+//   getUserCoin,
+//   updateUserCoin,
+// } = require("./controllers/moneyController");
 // const authRoutes = require("./routes/auth");
 // const CanvasMatrix = require('./models/canvasModel')
 // const messageRoutes = require("./routes/messages");
@@ -58,6 +58,7 @@ app.get("/", (req, res) => {
 app.post("/auth", authUser);
 app.get("/auth/:username", getUser);
 app.put("/auth/:username/coin", updateCoin);
+
 // MERCADO PAGO:
 app.post("/create_preference", async (req, res) => {
   try {
@@ -90,6 +91,7 @@ app.post("/create_preference", async (req, res) => {
     });
   }
 });
+// service:
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`Server running on Port ${PORT}`);
@@ -103,7 +105,7 @@ const io = socket(server, {
   },
 });
 
-const userCoins = {}; //-> Memory storage
+// const userCoins = {}; //-> Memory storage
 io.on("connection", async (socket) => {
   // -> CANVAS LOGIC:
   socket.emit("/canvas", await getCanvas());
@@ -122,21 +124,21 @@ io.on("connection", async (socket) => {
     io.emit("chat_message", data);
   });
   // -> MONEY LOGIC:
-  socket.on("auth_coin", async (data) => {
-    try {
-      const getCoin = await getUserCoin(data.username);
-      socket.emit("auth_coin", { coin: getCoin });
-    } catch (error) {
-      console.error("Error handling auth_coin event:", error);
-    }
-  });
-  socket.on("auth_coin_update", async ({ username, amount }) => {
-    try {
-      const newCoinValue = await updateUserCoin(username, amount);
-      userCoins[username] = newCoinValue; // Actualiza el almacenamiento en memoria
-      io.emit("auth_coin_update", { username, coin: newCoinValue }); // Emitir a todos los sockets conectados
-    } catch (error) {
-      console.error("Error handling auth_coin_update event:", error);
-    }
-  });
+  // socket.on("auth_coin", async (data) => {
+  //   try {
+  //     const getCoin = await getUserCoin(data.username);
+  //     socket.emit("auth_coin", { coin: getCoin });
+  //   } catch (error) {
+  //     console.error("Error handling auth_coin event:", error);
+  //   }
+  // });
+  // socket.on("auth_coin_update", async ({ username, amount }) => {
+  //   try {
+  //     const newCoinValue = await updateUserCoin(username, amount);
+  //     userCoins[username] = newCoinValue; // Actualiza el almacenamiento en memoria
+  //     io.emit("auth_coin_update", { username, coin: newCoinValue }); // Emitir a todos los sockets conectados
+  //   } catch (error) {
+  //     console.error("Error handling auth_coin_update event:", error);
+  //   }
+  // });
 });
