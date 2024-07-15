@@ -77,7 +77,7 @@ app.post("/create_preference", async (req, res) => {
         pending: "https://makemeamillionaire.today/error",
       },
       auto_return: "approved",
-      notification_url: "https://makemeamillionaire.today/bank/success",
+      // notification_url: "https://makemeamillionaire.today/bank/success",
     };
     const preference = new Preference(client);
     const result = await preference.create({ body });
